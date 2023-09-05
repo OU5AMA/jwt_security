@@ -36,8 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     jwt = authentication.substring(7);
     userEmail = jwtService.extractUserName(jwt);
+//    if we have our userEmail and user not authenticated
     if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
+//        We get the userDetails from the database
         UserDetails userDetails = this.UserDetailService.loadUserByName(userEmail);
+//        we check the user is valid or not
         if(jwtService.isTokenValid(jwt, userDetails)){
 //            if the token is valid, we need to update the security context and send the request to the dispatcher servlet
 //            create an object of type userNamePasswordAuthenticationToken
@@ -50,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authenticationToken.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request)
             );
-//            Update the security context hoder
+//            Update the security contexthoder, that is, update the authentication token
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
     }
